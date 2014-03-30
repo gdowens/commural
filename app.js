@@ -40,7 +40,6 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
 app.get('/mural', routes.mural(initialMural));
 app.get('/users', user.list);
 
