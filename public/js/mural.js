@@ -9,7 +9,7 @@ var stage = new PIXI.Stage(0x000000);
 var renderer = PIXI.autoDetectRenderer(1660, 1024);
 
 // create display object container
-var displayContainer = new PIXI.DisplayObjectContainer();
+var displayContainers = [];
 
 var getMural = function() {
 	$.get( "/mural", function( data ) {
@@ -19,34 +19,51 @@ var getMural = function() {
 
 var renderStage = function(mural) {
 	var stanza = mural.stanza; 
-
-  var formattedText = "";
+  var xPosition = 200;
+  var yPosition = 150;
+  var leftAlign = xPosition;
 	for (var i = 0; i < stanza.length; i++) {
-  	formattedText += " " + stanza[i] + " ";
+		// create a new Sprite using the texture
+		if (stanza[i] === "\n") {
+			yPosition += 30 + (30 * Math.random());
+			xPosition = leftAlign;
+			continue;
+		}
+
+		if (stanza[i] === "\t") {
+			xPosition += 40;
+			continue;
+		}
+
+		var style = {};
+		style.fill = 'white';
+		var text = new PIXI.Text(stanza[i], style);		
+  	text.position.x = xPosition;
+		text.position.y = yPosition;
+		text.anchor.x = 0;
+		text.anchor.y = 0;	
+		var displayContainer = new PIXI.DisplayObjectContainer();
+		displayContainer.addChild(text);
+
+		displayContainers.push({"dispObj" : displayContainer});		
+		xPosition += text._width + (100 * Math.random());		
 	}
 
-	// create a new Sprite using the texture
-	var style = {};
-	style.fill = 'white';
-	var text = new PIXI.Text(formattedText, style);
-
-	// center the sprites anchor point
-	text.anchor.x = 0;
-	text.anchor.y = 0;
-
-	// move the sprite t the center of the screen
-	text.position.x = 200;
-	text.position.y = 150;
-
-	displayContainer.addChild(text);
-
+	for (var ithWord in displayContainers) {
+   var wordObject = displayContainers[ithWord];
+   stage.addChild(wordObject.dispObj);
+		
+	}	
 }
 
 var blurMore = function() {
+	var rando = Math.round(81 * Math.random());
+	var displayContainer = displayContainers[rando].dispObj;
 	if (displayContainer.filters == null) {
 		displayContainer.filters = [new PIXI.PixelateFilter()];
 		return;
 	}
+
 	var xValue = displayContainer.filters[0].size.x;
 	var yValue = displayContainer.filters[0].size.y;
 	displayContainer.filters[0].size.x = xValue + 1;
@@ -54,6 +71,8 @@ var blurMore = function() {
 }
 
 var blurLess = function() {
+	var rando = Math.round(81 * Math.random());
+	var displayContainer = displayContainers[rando].dispObj;
 	if (displayContainer.filters == null) {
 		return;
 	}
@@ -86,9 +105,7 @@ $(function() {
 	requestAnimationFrame(animate);
 
 	// create a texture from an image path
-	//var texture = PIXI.Texture.fromImage("images/nyan-cat.png");	
-  
-  stage.addChild(displayContainer);
+	//var texture = PIXI.Texture.fromImage("images/nyan-cat.png");	    
 
   getMural(); 
 
