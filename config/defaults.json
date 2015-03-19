@@ -1,0 +1,8 @@
+{
+  "NODE_ENV": "development",
+  "PORT": 3000,
+  "MONGO_URL": "mongodb://localhost:27017/commural",
+  "REDIS_URL": "redis://localhost:6379",
+  "SESSION_SECRET": "5693459c9c6e2130ec8d94576fed6a3ff910f722",
+  "SESSION_COOKIE": "b51b4abd337b59e51c60b4c41039db1c44c72473"
+}

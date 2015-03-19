@@ -1,0 +1,9 @@
+{
+  "generator-derby": {
+    "project": "commural",
+    "apps": [
+      "commural"
+    ],
+    "coffee": true
+  }
+}
